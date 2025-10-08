@@ -12,19 +12,18 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class LoggingAspect {
-    @Before(value = "execution(* com.example.demo.starter.service.*.*(..))")
+    @Before(value = "execution(* com.example.demo.starter.application.service.*.*(..))")
     public void logBefore(JoinPoint joinPoint) {
         log.info("[LOG BEFORE] Method: {}", joinPoint.getSignature().getName());
     }
 
-    @AfterReturning(pointcut = "execution(* com.example.demo.starter.service.*.*(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* com.example.demo.starter.application.service.*.*(..))", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         log.info("[LOG AFTER RETURN] Method: {}, Result: {}", joinPoint.getSignature().getName(), result);
     }
 
-    @AfterThrowing(pointcut = "execution(* com.example.demo.starter.service.*.*(..))", throwing = "ex")
+    @AfterThrowing(pointcut = "execution(* com.example.demo.starter.application.service.*.*(..))", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
         log.error("[LOG EXCEPTION] Method: {}, Exception: ", joinPoint.getSignature().getName(), ex);
     }
-
 }

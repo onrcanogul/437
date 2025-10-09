@@ -47,10 +47,10 @@ public class AudioServiceImpl {
     }
 
     private Map<String, String> uploadToStorage(Path mp3Path) {
-        String s3Key = "audio/" + mp3Path.getFileName();
-        String s3Url = storageService.upload(mp3Path, s3Key);
-        log.info("File uploaded to cloud: {}", s3Url);
-        return Map.of("key", s3Key, "url", s3Url);
+        String cloudKey = "audio/" + mp3Path.getFileName();
+        String cloudUrl = storageService.upload(mp3Path, cloudKey);
+        log.info("File uploaded to cloud: {}", cloudUrl);
+        return Map.of("key", cloudKey, "url", cloudUrl);
     }
 
     private String extractTranscript(String storageUrl) {

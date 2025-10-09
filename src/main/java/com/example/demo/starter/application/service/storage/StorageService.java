@@ -4,4 +4,6 @@ import java.nio.file.Path;
 
 public interface StorageService {
     String upload(Path filePath, String key);
+    void delete(String key);
+    boolean exists(String key);
 }

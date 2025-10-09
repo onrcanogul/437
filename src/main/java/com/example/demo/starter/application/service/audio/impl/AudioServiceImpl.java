@@ -17,7 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class AudioServiceImpl {
-
     private final StorageService storageService;
     private final WhisperService whisperService;
 

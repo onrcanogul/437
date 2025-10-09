@@ -41,5 +41,23 @@ cloud:
     s3:
       bucket: meetingmindi-recordings
 
+github:
+  token: ghp_yourtoken
+  repo:
+    owner: yourusername
+    name: yourrepository
+
+azure:
+  organization: your-org
+  project: your-project
+  pat: your-personal-access-token
+
+jira:
+  url: https://your-domain.atlassian.net
+  email: your-email@example.com
+  apiToken: your-jira-api-token
+  projectKey: MINDI
+
+
 
 secret-key: "SECRETKEYKEYKEKYEKYKEYKEYK3242352342efgdsfgsdfgdsfgds"

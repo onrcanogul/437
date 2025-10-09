@@ -1,0 +1,125 @@
+package com.example.demo.starter.application.service.integration.impl;
+
+import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
+import com.example.demo.starter.application.service.integration.GithubIntegration;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
+import java.util.List;
+import org.springframework.web.client.HttpClientErrorException;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class GitHubIntegrationImpl implements GithubIntegration {
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${github.token}")
+    private String githubToken;
+
+    @Value("${github.repo.owner}")
+    private String repoOwner;
+
+    @Value("${github.repo.name}")
+    private String repoName;
+
+    @Override
+    public void createIssue(ProductBacklogItemDto pbi) {
+        try {
+            boolean copilotAvailable = checkIfCopilotExists();
+
+            String url = String.format("https://api.github.com/repos/%s/%s/issues", repoOwner, repoName);
+
+            HttpHeaders headers = setHeaders();
+            String bodyText = buildDescription(pbi);
+
+            Map<String, Object> body;
+
+            if (copilotAvailable) {
+                bodyText += "\n\n> Hey @copilot, please start working on this task.\n"
+                        + "> Make sure to follow our project conventions and open a PR when done.";
+
+                body = Map.of("title", pbi.getTitle(), "body", bodyText, "assignees", List.of("copilot"));
+                log.info("Copilot detected. Assigning issue to @copilot.");
+            } else {
+                body = Map.of("title", pbi.getTitle(), "body", bodyText);
+                log.info("Copilot not available. Creating regular issue only.");
+            }
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("GitHub issue created successfully: {}", response.getBody().get("html_url"));
+            } else {
+                log.error("GitHub issue creation failed: {}", response.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            log.error("Error creating GitHub issue: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to create GitHub issue", e);
+        }
+    }
+
+    /**
+     * Set headers of the request
+     */
+    private HttpHeaders setHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(githubToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
+    /**
+     * Checks if Copilot Agent user exists and is accessible via GitHub API.
+     */
+    private boolean checkIfCopilotExists() {
+        try {
+            String url = "https://api.github.com/users/copilot";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(githubToken);
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
+
+            return response.getStatusCode().is2xxSuccessful();
+
+        } catch (HttpClientErrorException.NotFound e) {
+            log.warn("Copilot user not found — agent mode probably disabled for this repo.");
+            return false;
+        } catch (Exception e) {
+            log.error("Error while checking Copilot availability: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Build Description for issue
+     */
+    private String buildDescription(ProductBacklogItemDto pbi) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("**Description:**\n")
+                .append(pbi.getDescription())
+                .append("\n\n")
+                .append("**Acceptance Criteria:**\n")
+                .append(pbi.getAcceptanceCriteria())
+                .append("\n\n")
+                .append("**Priority:** ").append(pbi.getPriority() != null ? pbi.getPriority() : "Normal")
+                .append("\n")
+                .append("**Created by:** ").append("System:TODO-CREATED-BY");
+        return sb.toString();
+    }
+
+    @Override
+    public String getProviderName() {
+        return "GITHUB";
+    }
+}
+
+

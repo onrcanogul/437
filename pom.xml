@@ -44,6 +44,12 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.12.774</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.bucket4j</groupId>

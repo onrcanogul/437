@@ -10,12 +10,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> implements MeetingService {
+    private final Mapper<Meeting, MeetingDto> mapper;
     public MeetingServiceImpl(BaseRepository<Meeting> repository, Mapper<Meeting, MeetingDto> mapper) {
         super(repository, mapper);
+        this.mapper = mapper;
     }
 
     @Override
     protected void updateEntity(MeetingDto dto, Meeting entity) {
-
+        entity = mapper.toEntity(dto);
     }
 }

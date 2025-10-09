@@ -39,7 +39,7 @@ public class ServiceResponse<T> {
         response.setErrors(errors);
         response.setStatusCode(statusCode);
         response.setSuccessful(false);
-        response.setTraceId(MDC.get("traceId"));  // ✅ TraceId otomatik ekleniyor
+        response.setTraceId(MDC.get("traceId"));
         return response;
     }
 
@@ -50,7 +50,7 @@ public class ServiceResponse<T> {
         response.setErrors(errorList);
         response.setStatusCode(statusCode);
         response.setSuccessful(false);
-        response.setTraceId(MDC.get("traceId"));  // ✅ TraceId otomatik ekleniyor
+        response.setTraceId(MDC.get("traceId"));
         return response;
     }
 }

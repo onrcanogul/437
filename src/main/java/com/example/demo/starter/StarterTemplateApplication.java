@@ -9,9 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @ComponentScan(basePackages = "com.example")
 public class StarterTemplateApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(StarterTemplateApplication.class, args);
 	}
-
 }

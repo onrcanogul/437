@@ -6,6 +6,7 @@ import com.example.demo.starter.application.service.base.impl.BaseServiceImpl;
 import com.example.demo.starter.application.service.meeting.MeetingService;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
 import com.example.demo.starter.domain.entity.Meeting;
+import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> implements MeetingService {
@@ -50,10 +52,13 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
 
     @Transactional
     public ServiceResponse<MeetingDto> upload(String transcript, String title) {
+        User mockUser = new User();
+        mockUser.setId(UUID.fromString("a8207648-1740-4315-af61-18a1702995d1"));
         Meeting meeting = Meeting.builder()
                 .title(title)
                 .transcript(transcript)
                 .status(MeetingStatus.UPLOADED)
+                .user(mockUser)
                 .build();
 
         Meeting createdMeeting = repository.save(meeting);

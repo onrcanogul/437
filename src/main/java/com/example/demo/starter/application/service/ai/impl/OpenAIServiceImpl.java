@@ -3,6 +3,7 @@ package com.example.demo.starter.application.service.ai.impl;
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.ai.OpenAIService;
+import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -65,8 +67,8 @@ public class OpenAIServiceImpl implements OpenAIService {
                             "title", meeting.getTitle(),
                             "status", meeting.getStatus().name(),
                             "user", Map.of(
-                                    "id", meeting.getUser().getId(),
-                                    "username", meeting.getUser().getUsername()
+                                    "id", "a8207648-1740-4315-af61-18a1702995d1",
+                                    "username", "onrcan"
                             ),
                             "transcript", meeting.getTranscript()
                     )
@@ -74,20 +76,30 @@ public class OpenAIServiceImpl implements OpenAIService {
 
             return """
             You are an AI assistant that analyzes software development meetings
-            and extracts backlog items in JSON format.
-
+            and extracts as many actionable Product Backlog Items as possible.
+            
+            Each backlog item must represent a distinct technical or functional action,
+            such as creating a new component, modifying logic, testing, refactoring, or deployment planning.
+            
             The following meeting information is provided:
             %s
-
-            Please extract all actionable Product Backlog Items discussed in the meeting
-            as a valid JSON array of objects, each having the following fields:
+            
+            Decompose every discussed decision or task into SEPARATE backlog items.
+            Be exhaustive — even small tasks, testing steps, or sub-decisions should become individual PBIs.
+            
+            Return the result as a valid JSON array of objects.
+            Each object must have:
             - title
             - description
             - priority (HIGH, MEDIUM, or LOW)
-            - acceptanceCriteria
-
-            Return only a valid JSON array.
-            Do not include any explanation or markdown code block.
+            - acceptanceCriteria (string, can include multiple bullet points)
+            
+            Rules:
+            - If a task can be logically divided into smaller parts (e.g. backend, frontend, deployment), split them.
+            - Include any follow-up or review actions as separate backlog items.
+            - Avoid merging multiple actions into one PBI.
+            - Do not include any explanation, markdown, or comments — only valid JSON.
+            
             """.formatted(meetingJson);
 
         } catch (JsonProcessingException e) {

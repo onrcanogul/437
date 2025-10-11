@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class TestForDevelopmentAspect {
-
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 

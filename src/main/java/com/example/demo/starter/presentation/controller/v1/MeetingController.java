@@ -36,10 +36,17 @@ public class MeetingController extends BaseController {
     }
 
     @PostMapping
-    @Operation(summary = "Create Meeting")
+    @Operation(summary = "Create Meeting From Meeting")
     public ResponseEntity<ServiceResponse<MeetingDto>> create(@RequestPart MultipartFile file,
                                                               @RequestPart String title) throws IOException, InterruptedException {
         return controllerResponse(meetingService.upload(file, title));
+    }
+
+    @PostMapping("transcript")
+    @Operation(summary = "Create Meeting From Transcript")
+    public ResponseEntity<ServiceResponse<MeetingDto>> create(@RequestPart String transcript,
+                                                              @RequestPart String title) throws IOException, InterruptedException {
+        return controllerResponse(meetingService.upload(transcript, title));
     }
 
     @PutMapping

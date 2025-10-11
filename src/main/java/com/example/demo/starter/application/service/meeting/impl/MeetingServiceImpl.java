@@ -47,6 +47,22 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
         return ServiceResponse.success(dto, 201);
     }
 
+
+    @Transactional
+    public ServiceResponse<MeetingDto> upload(String transcript, String title) {
+        Meeting meeting = Meeting.builder()
+                .title(title)
+                .transcript(transcript)
+                .status(MeetingStatus.UPLOADED)
+                .build();
+
+        Meeting createdMeeting = repository.save(meeting);
+        MeetingDto dto = mapper.toDto(createdMeeting);
+        dto.setBacklogItems(productBacklogItemService.analyzeAndCreate(dto).getData());
+
+        return ServiceResponse.success(dto, 201);
+    }
+
     @Override
     protected void updateEntity(MeetingDto dto, Meeting entity) {
         entity = mapper.toEntity(dto);

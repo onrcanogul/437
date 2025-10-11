@@ -10,4 +10,5 @@ import java.io.IOException;
 
 public interface MeetingService extends BaseService<Meeting, MeetingDto> {
     ServiceResponse<MeetingDto> upload(MultipartFile file, String title) throws IOException, InterruptedException;
+    ServiceResponse<MeetingDto> upload(String transcript, String title);
 }

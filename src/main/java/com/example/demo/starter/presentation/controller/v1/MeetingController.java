@@ -60,6 +60,4 @@ public class MeetingController extends BaseController {
     public ResponseEntity<ServiceResponse<NoContent>> update(@PathVariable UUID id) {
         return controllerResponse(meetingService.delete(id));
     }
-
-
 }

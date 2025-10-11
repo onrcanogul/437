@@ -58,6 +58,10 @@ jira:
   apiToken: your-jira-api-token
   projectKey: MINDI
 
+openai:
+  api:
+    url: https://api.openai.com/v1/chat/completions
+    key: ${OPENAI_API_KEY}
 
 
 secret-key: "SECRETKEYKEYKEKYEKYKEYKEYK3242352342efgdsfgsdfgdsfgds"

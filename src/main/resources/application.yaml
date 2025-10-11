@@ -36,8 +36,8 @@ cloud:
     region:
       static: eu-central-1
     credentials:
-      access-key: ${AWS_ACCESS_KEY_ID}
-      secret-key: ${AWS_SECRET_ACCESS_KEY}
+      access-key: asdasd
+      secret-key: asdasd
     s3:
       bucket: meetingmindi-recordings
 

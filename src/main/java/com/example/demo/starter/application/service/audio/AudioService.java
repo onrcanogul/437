@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface AudioService {
-    String processAndUploadAudio(MultipartFile mp4File) throws IOException, InterruptedException;
+    String processAudioAndTranscribe(MultipartFile mp4File) throws IOException, InterruptedException;
 }

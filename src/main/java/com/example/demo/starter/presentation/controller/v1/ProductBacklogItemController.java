@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/meeting")
+@RequestMapping("/api/v1/product-backlog-item")
 public class ProductBacklogItemController extends BaseController {
     private final ProductBacklogItemService productBacklogItemService;
 

@@ -1,5 +1,6 @@
 package com.example.demo.starter.application.service.audio.impl;
 
+import com.example.demo.starter.application.service.audio.AudioService;
 import com.example.demo.starter.application.service.storage.StorageService;
 import com.example.demo.starter.application.service.whisper.WhisperService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AudioServiceImpl {
+public class AudioServiceImpl implements AudioService {
     private final StorageService storageService;
     private final WhisperService whisperService;
 

@@ -25,10 +25,10 @@ public class MeetingController extends BaseController {
     }
 
     @GetMapping
-    @TestForDevelopment
+//    @TestForDevelopment
     @Operation(summary = "-TEST- Get All Meeting Services")
     public ResponseEntity<ServiceResponse<List<MeetingDto>>> get() {
-        return controllerResponse(meetingService.get(0, 0));
+        return controllerResponse(meetingService.get(1, 5));
     }
 
     @GetMapping("/{id}")

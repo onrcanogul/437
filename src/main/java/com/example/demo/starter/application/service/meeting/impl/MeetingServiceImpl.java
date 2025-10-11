@@ -33,7 +33,7 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
     @Override
     @Transactional
     public ServiceResponse<MeetingDto> upload(MultipartFile file, String title) throws IOException, InterruptedException {
-        String transcript = audioService.processAndUploadAudio(file);
+        String transcript = audioService.processAudioAndTranscribe(file);
         Meeting meeting = Meeting.builder()
                 .title(title)
                 .transcript(transcript)

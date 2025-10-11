@@ -7,7 +7,9 @@ import com.example.demo.starter.domain.entity.ProductBacklogItem;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProductBacklogItemService extends BaseService<ProductBacklogItem, ProductBacklogItemDto> {
+    ServiceResponse<List<ProductBacklogItemDto>> getByMeeting(UUID meetingId);
     ServiceResponse<List<ProductBacklogItemDto>> analyzeAndCreate(MeetingDto meeting);
 }

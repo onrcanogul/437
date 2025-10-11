@@ -13,6 +13,7 @@ import com.example.demo.starter.infrastructure.repository.ProductBacklogItemRepo
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductBacklogItemServiceImpl extends BaseServiceImpl<ProductBacklogItem, ProductBacklogItemDto> implements ProductBacklogItemService {
@@ -24,6 +25,13 @@ public class ProductBacklogItemServiceImpl extends BaseServiceImpl<ProductBacklo
         this.mapper = mapper;
         this.repository = repository;
         this.aiService = aiService;
+    }
+
+    @Override
+    public ServiceResponse<List<ProductBacklogItemDto>> getByMeeting(UUID meetingId) {
+        List<ProductBacklogItem> backlogItems = repository.findByMeeting_Id(meetingId);
+        List<ProductBacklogItemDto> dto = backlogItems.stream().map(mapper::toDto).toList();
+        return ServiceResponse.success(dto, 200);
     }
 
     @Override

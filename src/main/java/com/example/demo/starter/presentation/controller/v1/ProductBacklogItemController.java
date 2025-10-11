@@ -29,6 +29,12 @@ public class ProductBacklogItemController extends BaseController {
         return controllerResponse(productBacklogItemService.get(0, 0));
     }
 
+    @GetMapping("/meeting/{meetingId}")
+    @Operation(summary = "-TEST- Get Product Backlog Item By Id")
+    public ResponseEntity<ServiceResponse<List<ProductBacklogItemDto>>> getByMeeting(@PathVariable UUID meetingId) {
+        return controllerResponse(productBacklogItemService.getByMeeting(meetingId));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "-TEST- Get Product Backlog Item By Id")
     public ResponseEntity<ServiceResponse<ProductBacklogItemDto>> get(@PathVariable UUID id) {

@@ -1,0 +1,11 @@
+package com.example.demo.starter.application.service.ai;
+
+import com.example.demo.starter.application.dto.meeting.MeetingDto;
+import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
+import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+
+import java.util.List;
+
+public interface AIService {
+    ServiceResponse<List<ProductBacklogItemDto>> analyzeBacklog(MeetingDto meeting);
+}

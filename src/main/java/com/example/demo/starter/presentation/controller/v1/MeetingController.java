@@ -8,7 +8,9 @@ import com.example.demo.starter.presentation.controller.base.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,9 +36,10 @@ public class MeetingController extends BaseController {
     }
 
     @PostMapping
-    @Operation(summary = "-TEST- Create Meeting")
-    public ResponseEntity<ServiceResponse<MeetingDto>> create(MeetingDto model) {
-        return controllerResponse(meetingService.create(model));
+    @Operation(summary = "Create Meeting")
+    public ResponseEntity<ServiceResponse<MeetingDto>> create(@RequestPart MultipartFile file,
+                                                              @RequestPart String title) throws IOException, InterruptedException {
+        return controllerResponse(meetingService.upload(file, title));
     }
 
     @PutMapping

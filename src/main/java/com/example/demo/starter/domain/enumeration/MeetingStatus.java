@@ -4,5 +4,6 @@ public enum MeetingStatus {
     UPLOADED,
     CONVERTED,
     TRANSCRIBED,
+    ANALYZING,
     ANALYZED
 }

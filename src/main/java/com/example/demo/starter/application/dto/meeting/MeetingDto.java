@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +16,8 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 public class MeetingDto extends BaseDto {
     private String title;
-    private String videoUrl;
-    private String audioUrl;
     private String transcript;
     private MeetingStatus status = MeetingStatus.UPLOADED;
-    private LocalDateTime createdAt = LocalDateTime.now();
     private User user;
     private List<ProductBacklogItemDto> backlogItems = new ArrayList<>();
 }

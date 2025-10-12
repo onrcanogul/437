@@ -7,12 +7,14 @@ import com.example.demo.starter.application.service.base.impl.BaseServiceImpl;
 import com.example.demo.starter.application.service.meeting.MeetingService;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
 import com.example.demo.starter.domain.entity.Meeting;
+import com.example.demo.starter.domain.entity.Team;
 import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
 import com.example.demo.starter.infrastructure.exception.NotFoundException;
 import com.example.demo.starter.infrastructure.repository.MeetingRepository;
+import com.example.demo.starter.infrastructure.repository.TeamRepository;
 import com.example.demo.starter.infrastructure.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +31,12 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
     private final AudioService audioService;
     private final ProductBacklogItemService productBacklogItemService;
     private final CustomUserDetailsService userService;
-    private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
 
     public MeetingServiceImpl(MeetingRepository repository,
                               Mapper<Meeting, MeetingDto> mapper,
-                              AudioService audioService, ProductBacklogItemService productBacklogItemService, CustomUserDetailsService userService, UserRepository userRepository
+                              AudioService audioService, ProductBacklogItemService productBacklogItemService, CustomUserDetailsService userService, UserRepository userRepository,
+                              TeamRepository teamRepository
     ) {
         super(repository, mapper);
         this.mapper = mapper;
@@ -41,7 +44,7 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
         this.audioService = audioService;
         this.productBacklogItemService = productBacklogItemService;
         this.userService = userService;
-        this.userRepository = userRepository;
+        this.teamRepository = teamRepository;
     }
 
     @Override
@@ -87,16 +90,16 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
 
     @Transactional
     public ServiceResponse<MeetingDto> upload(String transcript, String title) {
-        User user = userRepository.findById(userService.getCurrentUserId())
+        Team team = teamRepository.findById(userService.getCurrentTeamId())
                 .orElseThrow(
-                        () -> new NotFoundException("User Not Found")
+                        () -> new NotFoundException("Team Not Found")
                 );
 
         Meeting meeting = Meeting.builder()
                 .title(title)
                 .transcript(transcript)
                 .status(MeetingStatus.UPLOADED)
-                .user(user)
+                .team(team)
                 .build();
 
         Meeting createdMeeting = repository.save(meeting);

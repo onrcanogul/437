@@ -9,11 +9,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface MeetingRepository extends BaseRepository<Meeting> {
-    @EntityGraph(attributePaths = {"backlogItems", "user"})
+    @EntityGraph(attributePaths = {"backlogItems", "team"})
     @Query("select m from Meeting m")
     List<Meeting> findAllWithRelations();
 
-    @EntityGraph(attributePaths = {"backlogItems", "user"})
+    @EntityGraph(attributePaths = {"backlogItems", "team"})
     @Query("select m from Meeting m where m.id = :id")
     Optional<Meeting> findByIdWithRelations(UUID id);
 }

@@ -26,7 +26,7 @@ public class Meeting extends BaseEntity {
     private MeetingStatus status = MeetingStatus.UPLOADED;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Team team;
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProductBacklogItem> backlogItems = new ArrayList<>();

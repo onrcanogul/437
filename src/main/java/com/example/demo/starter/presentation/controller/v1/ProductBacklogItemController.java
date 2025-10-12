@@ -2,7 +2,6 @@ package com.example.demo.starter.presentation.controller.v1;
 
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
-import com.example.demo.starter.infrastructure.annotation.TestForDevelopment;
 import com.example.demo.starter.infrastructure.common.response.NoContent;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.presentation.controller.base.BaseController;
@@ -23,14 +22,12 @@ public class ProductBacklogItemController extends BaseController {
     }
 
     @GetMapping
-    @TestForDevelopment
     @Operation(summary = "-TEST- Get All Product Backlog Items")
     public ResponseEntity<ServiceResponse<List<ProductBacklogItemDto>>> get() {
         return controllerResponse(productBacklogItemService.get(0, 0));
     }
 
     @GetMapping("/meeting/{meetingId}")
-    @TestForDevelopment
     @Operation(summary = "-TEST- Get Product Backlog Item By Id")
     public ResponseEntity<ServiceResponse<List<ProductBacklogItemDto>>> getByMeeting(@PathVariable UUID meetingId) {
         return controllerResponse(productBacklogItemService.getByMeeting(meetingId));
@@ -49,7 +46,6 @@ public class ProductBacklogItemController extends BaseController {
     }
 
     @PutMapping
-    @TestForDevelopment
     @Operation(summary = "-TEST- Update PBI")
     public ResponseEntity<ServiceResponse<ProductBacklogItemDto>> update(ProductBacklogItemDto model) {
         return controllerResponse(productBacklogItemService.update(model, model.getId()));

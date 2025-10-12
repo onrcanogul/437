@@ -2,7 +2,6 @@ package com.example.demo.starter.presentation.controller.v1;
 
 import com.example.demo.starter.application.dto.team.TeamDto;
 import com.example.demo.starter.application.service.team.TeamService;
-import com.example.demo.starter.infrastructure.annotation.TestForDevelopment;
 import com.example.demo.starter.infrastructure.common.response.NoContent;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.presentation.controller.base.BaseController;
@@ -23,7 +22,6 @@ public class TeamController extends BaseController {
     }
 
     @GetMapping
-    @TestForDevelopment
     @Operation(summary = "-TEST- Get All Teams")
     public ResponseEntity<ServiceResponse<List<TeamDto>>> get() {
         return controllerResponse(teamService.get(0, 0));
@@ -48,7 +46,6 @@ public class TeamController extends BaseController {
     }
 
     @PutMapping
-    @TestForDevelopment
     @Operation(summary = "-TEST- Update Team")
     public ResponseEntity<ServiceResponse<TeamDto>> update(TeamDto model) {
         return controllerResponse(teamService.update(model, model.getId()));

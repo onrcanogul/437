@@ -2,7 +2,6 @@ package com.example.demo.starter.presentation.controller.v1;
 
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.service.meeting.MeetingService;
-import com.example.demo.starter.infrastructure.annotation.TestForDevelopment;
 import com.example.demo.starter.infrastructure.common.response.NoContent;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.presentation.controller.base.BaseController;
@@ -25,7 +24,6 @@ public class MeetingController extends BaseController {
     }
 
     @GetMapping
-    @TestForDevelopment
     @Operation(summary = "-TEST- Get All Meeting Services")
     public ResponseEntity<ServiceResponse<List<MeetingDto>>> get() {
         return controllerResponse(meetingService.get());
@@ -52,7 +50,6 @@ public class MeetingController extends BaseController {
     }
 
     @PutMapping
-    @TestForDevelopment
     @Operation(summary = "-TEST- Update Meeting")
     public ResponseEntity<ServiceResponse<MeetingDto>> update(MeetingDto model) {
         return controllerResponse(meetingService.update(model, model.getId()));

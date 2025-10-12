@@ -11,5 +11,5 @@ import java.util.List;
 public class UserDto extends BaseDto {
     private String username;
     private String email;
-//    private List<String> roles = new ArrayList<>();
+    private List<String> roles = new ArrayList<>();
 }

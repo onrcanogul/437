@@ -25,7 +25,7 @@ public class MeetingController extends BaseController {
     }
 
     @GetMapping
-//    @TestForDevelopment
+    @TestForDevelopment
     @Operation(summary = "-TEST- Get All Meeting Services")
     public ResponseEntity<ServiceResponse<List<MeetingDto>>> get() {
         return controllerResponse(meetingService.get());

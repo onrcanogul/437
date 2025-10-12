@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("localize(badRequest.usernameAlreadyTaken)");
         }
         User user = new User();
-//        user.setRoles(List.of("USER"));
+        user.setRoles(List.of("USER"));
         user.setEmail(request.getEmail());
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

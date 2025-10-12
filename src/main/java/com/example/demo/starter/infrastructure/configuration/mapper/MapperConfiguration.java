@@ -3,9 +3,11 @@ package com.example.demo.starter.infrastructure.configuration.mapper;
 import com.example.demo.starter.application.dto.base.BaseDto;
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
+import com.example.demo.starter.application.dto.team.TeamDto;
 import com.example.demo.starter.application.dto.user.UserDto;
 import com.example.demo.starter.domain.entity.Meeting;
 import com.example.demo.starter.domain.entity.ProductBacklogItem;
+import com.example.demo.starter.domain.entity.Team;
 import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.domain.entity.base.BaseEntity;
 import org.springframework.context.annotation.Bean;
@@ -27,4 +29,6 @@ public class MapperConfiguration {
     }
     @Bean
     public Mapper<ProductBacklogItem, ProductBacklogItemDto> pbiMapper() { return new Mapper<>(ProductBacklogItem.class, ProductBacklogItemDto.class); }
+    @Bean
+    public Mapper<Team, TeamDto> teamMapper() { return new Mapper<>(Team.class, TeamDto.class); }
 }

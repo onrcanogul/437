@@ -23,6 +23,6 @@ public class User extends BaseEntity {
     private String username;
     private String email;
     private String password;
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    private List<String> roles = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 }

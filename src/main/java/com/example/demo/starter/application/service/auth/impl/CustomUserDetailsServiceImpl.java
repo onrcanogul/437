@@ -1,6 +1,5 @@
 package com.example.demo.starter.application.service.auth.impl;
 
-
 import com.example.demo.starter.application.dto.user.CurrentUser;
 import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.infrastructure.exception.NotFoundException;
@@ -35,14 +34,14 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with username: " + username));
 
-//        List<GrantedAuthority> authorities = user.getRoles().stream()
-//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-//                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(Collectors.toList());
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                List.of()
+                authorities
         );
     }
 

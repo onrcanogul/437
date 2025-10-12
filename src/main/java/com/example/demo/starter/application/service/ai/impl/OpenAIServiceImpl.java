@@ -3,7 +3,6 @@ package com.example.demo.starter.application.service.ai.impl;
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.ai.OpenAIService;
-import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -66,8 +65,8 @@ public class OpenAIServiceImpl implements OpenAIService {
                             "title", meeting.getTitle(),
                             "status", meeting.getStatus().name(),
                             "user", Map.of(
-                                    "id", "a8207648-1740-4315-af61-18a1702995d1",
-                                    "username", "onrcan"
+                                    "id", meeting.getUser().getId(),
+                                    "username", meeting.getUser().getUsername()
                             ),
                             "transcript", meeting.getTranscript()
                     )

@@ -1,6 +1,7 @@
 package com.example.demo.starter.application.service.auth.impl;
 
 
+import com.example.demo.starter.application.dto.user.CurrentUser;
 import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.infrastructure.exception.NotFoundException;
 import com.example.demo.starter.infrastructure.repository.UserRepository;
@@ -8,11 +9,13 @@ import com.example.demo.starter.application.service.auth.CustomUserDetailsServic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,5 +44,14 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
                 user.getPassword(),
                 authorities
         );
+    }
+
+    @Override
+    public UUID getCurrentUserId() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof CurrentUser cu) {
+            return cu.id();
+        }
+        return null;
     }
 }

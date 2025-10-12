@@ -28,13 +28,13 @@ public class MeetingController extends BaseController {
 //    @TestForDevelopment
     @Operation(summary = "-TEST- Get All Meeting Services")
     public ResponseEntity<ServiceResponse<List<MeetingDto>>> get() {
-        return controllerResponse(meetingService.get(1, 5));
+        return controllerResponse(meetingService.get());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "-TEST- Get Meeting By Id")
     public ResponseEntity<ServiceResponse<MeetingDto>> get(@PathVariable UUID id) {
-        return controllerResponse(meetingService.getSingle(id));
+        return controllerResponse(meetingService.getById(id));
     }
 
     @PostMapping

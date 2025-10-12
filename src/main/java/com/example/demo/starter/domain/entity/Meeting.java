@@ -18,6 +18,7 @@ public class Meeting extends BaseEntity {
     private String title;
 
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(columnDefinition = "TEXT")
     private String transcript;
 
@@ -27,6 +28,6 @@ public class Meeting extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProductBacklogItem> backlogItems = new ArrayList<>();
 }

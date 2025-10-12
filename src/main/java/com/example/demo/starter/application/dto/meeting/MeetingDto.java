@@ -5,6 +5,7 @@ import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.dto.user.UserDto;
 import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

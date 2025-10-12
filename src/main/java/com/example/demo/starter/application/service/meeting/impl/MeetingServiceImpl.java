@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,6 +42,29 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
         this.productBacklogItemService = productBacklogItemService;
         this.userService = userService;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ServiceResponse<List<MeetingDto>> get() {
+        var meetings = repository.findAllWithRelations();
+        var dtoList = meetings.stream().map(a -> {
+            var dto = mapper.toDto(a);
+            dto.setTranscript("");
+            return dto;
+        }).toList();
+        return ServiceResponse.success(dtoList, 200);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ServiceResponse<MeetingDto> getById(UUID id) {
+        var meeting = repository.findByIdWithRelations(id).orElseThrow(
+                () -> new NotFoundException("Meeting Not Found")
+        );
+        var dto = mapper.toDto(meeting);
+        meeting.setTranscript("");
+        return ServiceResponse.success(dto, 200);
     }
 
     @Override

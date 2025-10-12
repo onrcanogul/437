@@ -3,6 +3,7 @@ package com.example.demo.starter.domain.entity;
 import com.example.demo.starter.domain.entity.base.BaseEntity;
 import com.example.demo.starter.domain.enumeration.PbiStatus;
 import com.example.demo.starter.domain.enumeration.Priority;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,7 @@ public class ProductBacklogItem extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String acceptanceCriteria;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Meeting meeting;
 

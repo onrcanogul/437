@@ -11,6 +11,7 @@ import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
+import com.example.demo.starter.infrastructure.exception.NotFoundException;
 import com.example.demo.starter.infrastructure.repository.MeetingRepository;
 import com.example.demo.starter.infrastructure.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -62,12 +63,16 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
 
     @Transactional
     public ServiceResponse<MeetingDto> upload(String transcript, String title) {
-        UUID userId = userService.getCurrentUserId();
+        User user = userRepository.findById(userService.getCurrentUserId())
+                .orElseThrow(
+                        () -> new NotFoundException("User Not Found")
+                );
+
         Meeting meeting = Meeting.builder()
                 .title(title)
                 .transcript(transcript)
                 .status(MeetingStatus.UPLOADED)
-                .user(userRepository.getReferenceById(userId))
+                .user(user)
                 .build();
 
         Meeting createdMeeting = repository.save(meeting);

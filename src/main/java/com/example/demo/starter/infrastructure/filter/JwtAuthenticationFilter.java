@@ -1,5 +1,6 @@
 package com.example.demo.starter.infrastructure.filter;
 
+import com.example.demo.starter.application.dto.user.CurrentUser;
 import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
 import com.example.demo.starter.application.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
@@ -16,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,25 +49,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Get token without Bearer
         jwt = authHeader.substring(7);
         username = jwtService.extractUsername(jwt);
+        UUID userId = jwtService.extractId(jwt);
 
-        // Get user details with username
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+        if (username != null && userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            List<SimpleGrantedAuthority> authorities =
+                    userDetailsService.loadUserByUsername(username).getAuthorities().stream()
+                            .map(a -> new SimpleGrantedAuthority(a.getAuthority()))
+                            .toList();
 
-            //Check is valid
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                // We can use jwtService.extractRoles() to obtain roles
-                List<SimpleGrantedAuthority> authorities = userDetails.getAuthorities().stream()
-                        .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
-                        .collect(Collectors.toList());
+            CurrentUser principal = new CurrentUser(userId, username,
+                    authorities.stream().map(SimpleGrantedAuthority::getAuthority).toList());
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, authorities);
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+            var authToken = new UsernamePasswordAuthenticationToken(principal, null, authorities);
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
         filterChain.doFilter(request, response);

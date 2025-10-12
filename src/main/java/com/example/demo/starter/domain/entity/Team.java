@@ -21,9 +21,9 @@ public class Team extends BaseEntity {
     private String description;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "team_participants",
+            name = "team_members",
             joinColumns = @JoinColumn(name = "team_id"),
-            inverseJoinColumns = @JoinColumn(name = "participant_id")
+            inverseJoinColumns = @JoinColumn(name = "member_id")
     )
     private List<User> members = new ArrayList<>();
 }

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController extends BaseController {
     private final AuthService authService;
-
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
@@ -36,6 +35,4 @@ public class AuthController extends BaseController {
     public ResponseEntity<ServiceResponse<String>> register(@RequestBody RegisterDto model) {
         return controllerResponse(authService.register(model));
     }
-
-
 }

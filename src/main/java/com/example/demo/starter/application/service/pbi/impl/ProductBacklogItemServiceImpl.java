@@ -8,7 +8,6 @@ import com.example.demo.starter.application.service.pbi.ProductBacklogItemServic
 import com.example.demo.starter.domain.entity.ProductBacklogItem;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
-import com.example.demo.starter.infrastructure.repository.BaseRepository;
 import com.example.demo.starter.infrastructure.repository.ProductBacklogItemRepository;
 import org.springframework.stereotype.Service;
 

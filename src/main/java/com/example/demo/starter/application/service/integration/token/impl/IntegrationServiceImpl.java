@@ -16,10 +16,10 @@ import com.example.demo.starter.infrastructure.repository.UserRepository;
 import com.example.demo.starter.infrastructure.util.encryptor.AesEncryptor;
 import com.example.demo.starter.infrastructure.util.response.NoContent;
 import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,9 +42,23 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public ServiceResponse<List<IntegrationTokenDto>> getByUser(UUID userId) {
+        List<IntegrationToken> integrationTokens =  repository.findByUserId(userId);
+        List<IntegrationTokenDto> dtoList = integrationTokens.stream().map(t -> {
+            var token = mapper.toDto(t);
+            token.setToken("------------------------------------------");
+            return token;
+        }).toList();
+        return ServiceResponse.success(dtoList, 200);
+    }
+
+    @Override
     public ServiceResponse<NoContent> connectUser(ProviderType provider, String token, String meta) {
         IssueIntegration resolvedIntegration = integrationResolver.resolve(provider);
         if(!resolvedIntegration.validateToken(token)) throw new BadRequestException("Token is not valid");
+
+        Map<String, String> userInfo = resolvedIntegration.getUserInfo(token)
+                .orElse(Map.of("username", "unknown", "email", ""));
 
         String encrypted = encryptor.encrypt(token);
         User user = userRepository.findById(userService.getCurrentUserId()).orElseThrow(
@@ -56,6 +70,8 @@ public class IntegrationServiceImpl implements IntegrationService {
                 .token(encrypted)
                 .meta(meta)
                 .user(user)
+                .emailAtProvider(userInfo.get("email"))
+                .usernameAtProvider(userInfo.get("username"))
                 .build();
 
         repository.save(integration);
@@ -66,5 +82,14 @@ public class IntegrationServiceImpl implements IntegrationService {
     public Optional<String> getDecryptedToken(UUID userId, ProviderType provider) {
         return repository.findByProviderAndUserId(provider, userId)
                 .map(t -> encryptor.decrypt(t.getToken()));
+    }
+
+    @Override
+    public ServiceResponse<NoContent> delete(UUID userId, ProviderType provider) {
+        IntegrationToken integrationToken = repository.findByProviderAndUserId(provider, userId).orElseThrow(
+                () -> new NotFoundException("Token Not Found")
+        );
+        repository.delete(integrationToken);
+        return ServiceResponse.success(204);
     }
 }

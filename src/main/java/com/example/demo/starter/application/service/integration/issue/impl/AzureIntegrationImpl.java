@@ -9,8 +9,11 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +31,14 @@ public class AzureIntegrationImpl implements AzureIntegration {
     @Value("${azure.pat}")
     private String personalAccessToken;
 
+    private static final String AZURE_ORG_URL = "https://dev.azure.com";
+
 
     @Override
     public void createIssue(ProductBacklogItemDto pbi) {
         try {
             String url = String.format(
-                    "https://dev.azure.com/%s/%s/_apis/wit/workitems/$Product%%20Backlog%%20Item?api-version=7.0",
+                    AZURE_ORG_URL, "/%s/%s/_apis/wit/workitems/$Product%%20Backlog%%20Item?api-version=7.0",
                     organization, project
             );
 
@@ -70,7 +75,60 @@ public class AzureIntegrationImpl implements AzureIntegration {
 
     @Override
     public boolean validateToken(String token) {
-        return true;
+        try {
+            HttpHeaders headers = azureHeaders(token);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    AZURE_ORG_URL + "/_apis/profile/profiles/me?api-version=7.0",
+                    HttpMethod.GET, entity, Map.class
+            );
+
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            log.warn("Azure token validation failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public Optional<Map<String, String>> getUserInfo(String token) {
+        try {
+            HttpHeaders headers = azureHeaders(token);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    AZURE_ORG_URL + "/_apis/profile/profiles/me?api-version=7.0",
+                    HttpMethod.GET, entity, Map.class
+            );
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                return Optional.empty();
+            }
+
+            Map<String, Object> body = response.getBody();
+            Map<String, String> info = Map.of(
+                    "username", (String) body.get("displayName"),
+                    "email", (String) body.get("emailAddress")
+            );
+
+            return Optional.of(info);
+
+        } catch (Exception e) {
+            log.error("Error fetching Azure DevOps user info: {}", e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    private HttpHeaders azureHeaders(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String auth = ":" + token;
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+        headers.set("Authorization", "Basic " + encodedAuth);
+
+        return headers;
     }
 
     @Override

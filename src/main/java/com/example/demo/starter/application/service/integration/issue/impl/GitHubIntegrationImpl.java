@@ -8,6 +8,7 @@ import com.example.demo.starter.domain.enumeration.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class GitHubIntegrationImpl implements GithubIntegration {
 
     private final RestTemplate restTemplate = new RestTemplate();
+    @Lazy
     private final IntegrationService integrationService;
     private final CustomUserDetailsService userService;
 
@@ -89,6 +92,31 @@ public class GitHubIntegrationImpl implements GithubIntegration {
             return res.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public Optional<Map<String, String>> getUserInfo(String token) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(token);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response =
+                    restTemplate.exchange("https://api.github.com/user", HttpMethod.GET, entity, Map.class);
+
+            if (!response.getStatusCode().is2xxSuccessful()) return Optional.empty();
+
+            Map<String, Object> body = response.getBody();
+            Map<String, String> info = Map.of(
+                    "username", (String) body.get("login"),
+                    "email", body.get("email") != null ? (String) body.get("email") : ""
+            );
+            return Optional.of(info);
+
+        } catch (Exception e) {
+            log.error("Error fetching GitHub user info: {}", e.getMessage());
+            return Optional.empty();
         }
     }
 

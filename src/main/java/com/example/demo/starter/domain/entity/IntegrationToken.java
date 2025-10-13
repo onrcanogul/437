@@ -16,6 +16,8 @@ public class IntegrationToken extends BaseEntity {
     private String token; // encrypted
 
     private String meta; // project name etc.
+    private String usernameAtProvider;
+    private String emailAtProvider;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

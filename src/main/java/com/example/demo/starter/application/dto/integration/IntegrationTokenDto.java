@@ -15,4 +15,6 @@ public class IntegrationTokenDto extends BaseDto {
     private String token; // encrypted
     private String meta; // project name etc.
     private UserDto user;
+    private String usernameAtProvider;
+    private String emailAtProvider;
 }

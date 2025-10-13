@@ -9,7 +9,7 @@ import com.example.demo.starter.application.service.pbi.ProductBacklogItemServic
 import com.example.demo.starter.domain.entity.Meeting;
 import com.example.demo.starter.domain.entity.Team;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
-import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
 import com.example.demo.starter.infrastructure.exception.NotFoundException;
 import com.example.demo.starter.infrastructure.repository.MeetingRepository;

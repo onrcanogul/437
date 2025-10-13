@@ -2,8 +2,8 @@ package com.example.demo.starter.presentation.controller.v1;
 
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
-import com.example.demo.starter.infrastructure.common.response.NoContent;
-import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+import com.example.demo.starter.infrastructure.util.response.NoContent;
+import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.example.demo.starter.presentation.controller.base.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;

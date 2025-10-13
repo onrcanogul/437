@@ -1,4 +1,4 @@
-package com.example.demo.starter.infrastructure.common.response;
+package com.example.demo.starter.infrastructure.util.response;
 
 import lombok.Getter;
 import lombok.Setter;

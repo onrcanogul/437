@@ -6,7 +6,7 @@ import com.example.demo.starter.application.service.ai.AIService;
 import com.example.demo.starter.application.service.base.impl.BaseServiceImpl;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
 import com.example.demo.starter.domain.entity.ProductBacklogItem;
-import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
 import com.example.demo.starter.infrastructure.repository.ProductBacklogItemRepository;
 import org.springframework.stereotype.Service;

@@ -1,17 +1,21 @@
-package com.example.demo.starter.application.service.integration.impl;
+package com.example.demo.starter.application.service.integration.issue.impl;
 
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
-import com.example.demo.starter.application.service.integration.GithubIntegration;
+import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
+import com.example.demo.starter.application.service.integration.issue.GithubIntegration;
+import com.example.demo.starter.application.service.integration.token.IntegrationService;
+import com.example.demo.starter.domain.enumeration.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Map;
 import java.util.List;
-import org.springframework.web.client.HttpClientErrorException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,9 +23,8 @@ import org.springframework.web.client.HttpClientErrorException;
 public class GitHubIntegrationImpl implements GithubIntegration {
 
     private final RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${github.token}")
-    private String githubToken;
+    private final IntegrationService integrationService;
+    private final CustomUserDetailsService userService;
 
     @Value("${github.repo.owner}")
     private String repoOwner;
@@ -32,15 +35,19 @@ public class GitHubIntegrationImpl implements GithubIntegration {
     @Override
     public void createIssue(ProductBacklogItemDto pbi) {
         try {
-            boolean copilotAvailable = checkIfCopilotExists();
+            UUID userId = userService.getCurrentUserId();
+
+            String githubToken = integrationService
+                    .getDecryptedToken(userId, ProviderType.GITHUB)
+                    .orElseThrow(() -> new IllegalStateException("No GitHub token found for user " + userId));
+
+            boolean copilotAvailable = checkIfCopilotExists(githubToken);
 
             String url = String.format("https://api.github.com/repos/%s/%s/issues", repoOwner, repoName);
-
-            HttpHeaders headers = setHeaders();
+            HttpHeaders headers = setHeaders(githubToken);
             String bodyText = buildDescription(pbi);
 
             Map<String, Object> body;
-
             if (copilotAvailable) {
                 bodyText += "\n\n> Hey @copilot, please start working on this task.\n"
                         + "> Make sure to follow our project conventions and open a PR when done.";
@@ -67,29 +74,21 @@ public class GitHubIntegrationImpl implements GithubIntegration {
         }
     }
 
-    /**
-     * Set headers of the request
-     */
-    private HttpHeaders setHeaders() {
+    private HttpHeaders setHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(githubToken);
+        headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
 
-    /**
-     * Checks if Copilot Agent user exists and is accessible via GitHub API.
-     */
-    private boolean checkIfCopilotExists() {
+    private boolean checkIfCopilotExists(String token) {
         try {
             String url = "https://api.github.com/users/copilot";
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(githubToken);
+            headers.setBearerAuth(token);
             HttpEntity<Void> request = new HttpEntity<>(headers);
             ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
-
             return response.getStatusCode().is2xxSuccessful();
-
         } catch (HttpClientErrorException.NotFound e) {
             log.warn("Copilot user not found — agent mode probably disabled for this repo.");
             return false;
@@ -99,9 +98,6 @@ public class GitHubIntegrationImpl implements GithubIntegration {
         }
     }
 
-    /**
-     * Build Description for issue
-     */
     private String buildDescription(ProductBacklogItemDto pbi) {
         StringBuilder sb = new StringBuilder();
         sb.append("**Description:**\n")
@@ -121,5 +117,3 @@ public class GitHubIntegrationImpl implements GithubIntegration {
         return "GITHUB";
     }
 }
-
-

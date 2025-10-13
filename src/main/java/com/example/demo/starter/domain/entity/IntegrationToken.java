@@ -1,10 +1,8 @@
 package com.example.demo.starter.domain.entity;
 
 import com.example.demo.starter.domain.entity.base.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.example.demo.starter.domain.enumeration.ProviderType;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -12,7 +10,8 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class IntegrationToken extends BaseEntity {
-    private String provider; // "AZURE", "JIRA"
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
 
     private String token; // encrypted
 

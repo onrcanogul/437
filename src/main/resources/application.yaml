@@ -64,4 +64,8 @@ openai:
     key: ${OPENAI_API_KEY}
 
 
+encryption:
+  secret: MY_SUPER_SECRET_KEY
+
+
 secret-key: "SECRETKEYKEYKEKYEKYKEYKEYK3242352342efgdsfgsdfgdsfgds"

@@ -3,7 +3,7 @@ package com.example.demo.starter.application.service.meeting;
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.service.base.BaseService;
 import com.example.demo.starter.domain.entity.Meeting;
-import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

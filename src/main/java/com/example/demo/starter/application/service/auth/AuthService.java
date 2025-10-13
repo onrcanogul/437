@@ -2,8 +2,8 @@ package com.example.demo.starter.application.service.auth;
 
 import com.example.demo.starter.application.dto.user.LoginDto;
 import com.example.demo.starter.application.dto.user.RegisterDto;
-import com.example.demo.starter.infrastructure.common.response.AuthResponse;
-import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+import com.example.demo.starter.infrastructure.util.response.AuthResponse;
+import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 
 public interface AuthService {
     ServiceResponse<AuthResponse> login(LoginDto request);

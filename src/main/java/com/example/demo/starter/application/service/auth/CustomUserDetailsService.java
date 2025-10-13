@@ -1,7 +1,7 @@
 package com.example.demo.starter.application.service.auth;
 
 import com.example.demo.starter.application.dto.user.UserDto;
-import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;

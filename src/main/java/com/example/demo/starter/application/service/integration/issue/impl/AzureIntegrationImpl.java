@@ -1,7 +1,7 @@
-package com.example.demo.starter.application.service.integration.impl;
+package com.example.demo.starter.application.service.integration.issue.impl;
 
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
-import com.example.demo.starter.application.service.integration.AzureIntegration;
+import com.example.demo.starter.application.service.integration.issue.AzureIntegration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

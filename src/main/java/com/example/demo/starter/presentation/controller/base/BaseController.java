@@ -1,6 +1,6 @@
 package com.example.demo.starter.presentation.controller.base;
 
-import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
+import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import org.springframework.http.ResponseEntity;
 
 public class BaseController {

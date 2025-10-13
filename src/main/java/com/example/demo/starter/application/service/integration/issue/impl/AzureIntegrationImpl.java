@@ -28,6 +28,7 @@ public class AzureIntegrationImpl implements AzureIntegration {
     @Value("${azure.pat}")
     private String personalAccessToken;
 
+
     @Override
     public void createIssue(ProductBacklogItemDto pbi) {
         try {
@@ -68,8 +69,13 @@ public class AzureIntegrationImpl implements AzureIntegration {
     }
 
     @Override
+    public boolean validateToken(String token) {
+        return true;
+    }
+
+    @Override
     public String getProviderName() {
-        return "AZURE_DEVOPS";
+        return "AZURE";
     }
 
     private String formatAsHtml(String text) {
@@ -79,12 +85,11 @@ public class AzureIntegrationImpl implements AzureIntegration {
 
     private int mapPriority(Enum<?> priority) {
         if (priority == null) return 2; // Medium by default
-        switch (priority.name()) {
-            case "HIGH": return 1;
-            case "MEDIUM": return 2;
-            case "LOW": return 3;
-            default: return 2;
-        }
+        return switch (priority.name()) {
+            case "HIGH" -> 1;
+            case "LOW" -> 3;
+            default -> 2;
+        };
     }
 
     private String generateFunctionalAnalysis(ProductBacklogItemDto pbi) {

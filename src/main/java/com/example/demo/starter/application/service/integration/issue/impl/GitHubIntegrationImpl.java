@@ -74,6 +74,24 @@ public class GitHubIntegrationImpl implements GithubIntegration {
         }
     }
 
+    @Override
+    public boolean validateToken(String token) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(token);
+            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+            ResponseEntity<Map> res = new RestTemplate().exchange(
+                    "https://api.github.com/user",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    Map.class
+            );
+            return res.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private HttpHeaders setHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);

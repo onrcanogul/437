@@ -3,6 +3,7 @@ package com.example.demo.starter.application.service.integration.issue;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 
 public interface IssueIntegration {
+    boolean validateToken(String token);
     void createIssue(ProductBacklogItemDto pbi);
     String getProviderName(); // e.g. "GITHUB", "AZURE_DEVOPS", "JIRA"
 }

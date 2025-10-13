@@ -8,7 +8,6 @@ import com.example.demo.starter.application.service.meeting.MeetingService;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
 import com.example.demo.starter.domain.entity.Meeting;
 import com.example.demo.starter.domain.entity.Team;
-import com.example.demo.starter.domain.entity.User;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
 import com.example.demo.starter.infrastructure.common.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
@@ -53,6 +52,19 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
         var meetings = repository.findAllWithRelations();
         var dtoList = meetings.stream().map(a -> {
             var dto = mapper.toDto(a);
+            dto.setTranscript("");
+            return dto;
+        }).toList();
+        return ServiceResponse.success(dtoList, 200);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ServiceResponse<List<MeetingDto>> getByTeam() {
+        UUID teamId = userService.getCurrentTeamId();
+        List<Meeting> meetings = repository.findByTeam(teamId);
+        List<MeetingDto> dtoList = meetings.stream().map(a -> {
+            MeetingDto dto = mapper.toDto(a);
             dto.setTranscript("");
             return dto;
         }).toList();

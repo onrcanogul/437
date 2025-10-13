@@ -24,11 +24,11 @@ public class TeamController extends BaseController {
     @GetMapping
     @Operation(summary = "-TEST- Get All Teams")
     public ResponseEntity<ServiceResponse<List<TeamDto>>> get() {
-        return controllerResponse(teamService.get(0, 0));
+        return controllerResponse(teamService.get(0, 30));
     }
 
     @GetMapping("member/{memberId}")
-    @Operation(summary = "Get Team By Id")
+    @Operation(summary = "Get Team By Member Id")
     public ResponseEntity<ServiceResponse<List<TeamDto>>> getByMember(@PathVariable UUID memberId) {
         return controllerResponse(teamService.getByMember(memberId));
     }
@@ -41,7 +41,7 @@ public class TeamController extends BaseController {
 
     @PostMapping
     @Operation(summary = "-TEST- Create Team")
-    public ResponseEntity<ServiceResponse<TeamDto>> create(TeamDto model) {
+    public ResponseEntity<ServiceResponse<TeamDto>> create(@RequestBody TeamDto model) {
         return controllerResponse(teamService.create(model));
     }
 

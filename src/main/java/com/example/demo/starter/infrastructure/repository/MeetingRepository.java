@@ -14,6 +14,10 @@ public interface MeetingRepository extends BaseRepository<Meeting> {
     List<Meeting> findAllWithRelations();
 
     @EntityGraph(attributePaths = {"backlogItems", "team"})
+    @Query("select m from Meeting m where m.team.id = :teamId")
+    List<Meeting> findByTeam(UUID teamId);
+
+    @EntityGraph(attributePaths = {"backlogItems", "team"})
     @Query("select m from Meeting m where m.id = :id")
     Optional<Meeting> findByIdWithRelations(UUID id);
 }

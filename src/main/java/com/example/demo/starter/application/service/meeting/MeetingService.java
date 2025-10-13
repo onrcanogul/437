@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public interface MeetingService extends BaseService<Meeting, MeetingDto> {
     ServiceResponse<List<MeetingDto>> get();
+    ServiceResponse<List<MeetingDto>> getByTeam();
     ServiceResponse<MeetingDto> getById(UUID id);
     ServiceResponse<MeetingDto> upload(MultipartFile file, String title) throws IOException, InterruptedException;
     ServiceResponse<MeetingDto> upload(String transcript, String title);

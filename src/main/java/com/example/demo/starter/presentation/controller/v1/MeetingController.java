@@ -29,6 +29,12 @@ public class MeetingController extends BaseController {
         return controllerResponse(meetingService.get());
     }
 
+    @GetMapping("team")
+    @Operation(summary = "Get Meeting By Team Id")
+    public ResponseEntity<ServiceResponse<List<MeetingDto>>> getByTeam() {
+        return controllerResponse(meetingService.getByTeam());
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "-TEST- Get Meeting By Id")
     public ResponseEntity<ServiceResponse<MeetingDto>> get(@PathVariable UUID id) {

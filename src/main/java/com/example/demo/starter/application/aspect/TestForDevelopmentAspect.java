@@ -1,4 +1,4 @@
-package com.example.demo.starter.application.aop;
+package com.example.demo.starter.application.aspect;
 
 import com.example.demo.starter.infrastructure.annotation.TestForDevelopment;
 import org.aspectj.lang.ProceedingJoinPoint;

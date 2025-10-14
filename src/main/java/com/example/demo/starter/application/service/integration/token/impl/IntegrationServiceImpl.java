@@ -1,6 +1,7 @@
 package com.example.demo.starter.application.service.integration.token.impl;
 
 import com.example.demo.starter.application.dto.integration.IntegrationTokenDto;
+import com.example.demo.starter.application.dto.integration.RepositoryDto;
 import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
 import com.example.demo.starter.application.service.integration.issue.IssueIntegration;
 import com.example.demo.starter.application.service.integration.issue.impl.IntegrationResolver;
@@ -17,11 +18,9 @@ import com.example.demo.starter.infrastructure.util.encryptor.AesEncryptor;
 import com.example.demo.starter.infrastructure.util.response.NoContent;
 import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
@@ -82,6 +81,20 @@ public class IntegrationServiceImpl implements IntegrationService {
     public Optional<String> getDecryptedToken(UUID userId, ProviderType provider) {
         return repository.findByProviderAndUserId(provider, userId)
                 .map(t -> encryptor.decrypt(t.getToken()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ServiceResponse<List<RepositoryDto>> getRepositoriesForMeeting() {
+        List<RepositoryDto> repositories = new ArrayList<>();
+        UUID userId = userService.getCurrentUserId();
+        List<IntegrationToken> integrations = repository.findByUserId(userId);
+
+        integrations.forEach(integration -> {
+            IssueIntegration integrationService = integrationResolver.resolve(integration.getProvider());
+            repositories.addAll(integrationService.getRepositories(integration.getToken(), userId));
+        });
+        return ServiceResponse.success(repositories, 200);
     }
 
     @Override

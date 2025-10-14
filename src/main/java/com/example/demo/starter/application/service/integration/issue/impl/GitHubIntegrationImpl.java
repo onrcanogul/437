@@ -1,5 +1,6 @@
 package com.example.demo.starter.application.service.integration.issue.impl;
 
+import com.example.demo.starter.application.dto.integration.RepositoryDto;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
 import com.example.demo.starter.application.service.integration.issue.GithubIntegration;
@@ -14,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Map;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +74,29 @@ public class GitHubIntegrationImpl implements GithubIntegration {
             throw new RuntimeException("Failed to create GitHub issue", e);
         }
     }
+
+    @Override
+    public List<RepositoryDto> getRepositories(String accessToken, UUID userId) {
+        String githubToken = integrationService
+                .getDecryptedToken(userId, ProviderType.GITHUB)
+                .orElseThrow(() -> new IllegalStateException("No GitHub token found for user " + userId));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String githubReposUrl = "https://api.github.com/user/repos";
+        ResponseEntity<RepositoryDto[]> response = restTemplate.exchange(
+                githubReposUrl,
+                HttpMethod.GET,
+                entity,
+                RepositoryDto[].class
+        );
+
+        return Arrays.asList(response.getBody());
+    }
+
 
     @Override
     public boolean validateToken(String token) {

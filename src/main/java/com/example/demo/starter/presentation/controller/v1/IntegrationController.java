@@ -1,6 +1,7 @@
 package com.example.demo.starter.presentation.controller.v1;
 
 import com.example.demo.starter.application.dto.integration.IntegrationTokenDto;
+import com.example.demo.starter.application.dto.integration.RepositoryDto;
 import com.example.demo.starter.application.service.integration.token.IntegrationService;
 import com.example.demo.starter.domain.enumeration.ProviderType;
 import com.example.demo.starter.infrastructure.util.response.NoContent;
@@ -25,6 +26,11 @@ public class IntegrationController extends BaseController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<ServiceResponse<List<IntegrationTokenDto>>> get(@PathVariable UUID userId) {
         return controllerResponse(service.getByUser(userId));
+    }
+
+    @GetMapping("repositories")
+    public ResponseEntity<ServiceResponse<List<RepositoryDto>>> get() {
+        return controllerResponse(service.getRepositoriesForMeeting());
     }
 
     @PostMapping("/connect")

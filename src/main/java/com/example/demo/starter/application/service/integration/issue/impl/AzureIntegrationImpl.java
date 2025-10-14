@@ -1,19 +1,19 @@
 package com.example.demo.starter.application.service.integration.issue.impl;
 
+import com.example.demo.starter.application.dto.integration.RepositoryDto;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.integration.issue.AzureIntegration;
+import com.example.demo.starter.domain.enumeration.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +71,50 @@ public class AzureIntegrationImpl implements AzureIntegration {
             log.error("Error creating Azure DevOps PBI: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to create Azure DevOps PBI", e);
         }
+    }
+
+    @Override
+    public List<RepositoryDto> getRepositories(String accessToken, UUID userId) {
+
+        String azureApiUrl = "https://dev.azure.com";
+        String organization = "myorganization"; // bunu dinamik hale getireceğiz
+
+        String url = UriComponentsBuilder
+                .fromHttpUrl(String.format("%s/%s/_apis/git/repositories", azureApiUrl, organization))
+                .queryParam("api-version", "7.0")
+                .toUriString();
+
+        String basicAuth = Base64.getEncoder()
+                .encodeToString((":" + accessToken).getBytes(StandardCharsets.UTF_8));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Basic " + basicAuth);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                Map.class
+        );
+
+        List<Map<String, Object>> repos = (List<Map<String, Object>>) response.getBody().get("value");
+
+        return repos.stream()
+                .map(repo -> {
+                    RepositoryDto dto = new RepositoryDto();
+                    dto.setId(String.valueOf(repo.get("id")));
+                    dto.setName((String) repo.get("name"));
+                    dto.setFull_name((String) ((Map<?, ?>) repo.get("project")).get("name") + "/" + repo.get("name"));
+                    dto.setHtml_url((String) repo.get("webUrl"));
+                    dto.setDescription((String) repo.get("description"));
+                    dto.setLanguage("N/A");
+                    dto.setPrivateRepo(true);
+                    return dto;
+                })
+                .toList();
     }
 
     @Override

@@ -81,7 +81,7 @@ public class GitHubIntegrationImpl implements GithubIntegration {
                 .getDecryptedToken(userId, ProviderType.GITHUB)
                 .orElseThrow(() -> new IllegalStateException("No GitHub token found for user " + userId));
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
+        headers.setBearerAuth(githubToken);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
         HttpEntity<String> entity = new HttpEntity<>(headers);

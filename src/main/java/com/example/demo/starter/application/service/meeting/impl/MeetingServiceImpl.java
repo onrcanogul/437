@@ -12,6 +12,7 @@ import com.example.demo.starter.domain.entity.IntegrationToken;
 import com.example.demo.starter.domain.entity.Meeting;
 import com.example.demo.starter.domain.entity.Team;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
+import com.example.demo.starter.domain.enumeration.ProviderType;
 import com.example.demo.starter.infrastructure.repository.IntegrationTokenRepository;
 import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.example.demo.starter.infrastructure.configuration.mapper.Mapper;
@@ -93,12 +94,14 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
 
     @Override
     @Transactional
-    public ServiceResponse<MeetingDto> upload(MultipartFile file, String title) throws IOException, InterruptedException {
+    public ServiceResponse<MeetingDto> upload(MultipartFile file, String title, String repositoryId, ProviderType providerType) throws IOException, InterruptedException {
         String transcript = audioService.processAudioAndTranscribe(file);
         Meeting meeting = Meeting.builder()
                 .title(title)
                 .transcript(transcript)
                 .status(MeetingStatus.UPLOADED)
+                .repositoryId(repositoryId)
+                .repositoryProvider(providerType)
                 .build();
 
         Meeting createdMeeting = repository.save(meeting);
@@ -110,7 +113,7 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
 
     @Override
     @Transactional
-    public ServiceResponse<MeetingDto> upload(String transcript, String title) {
+    public ServiceResponse<MeetingDto> upload(String transcript, String title, String repositoryId, ProviderType providerType) {
         Team team = teamRepository.findById(userService.getCurrentTeamId())
                 .orElseThrow(
                         () -> new NotFoundException("Team Not Found")
@@ -121,6 +124,8 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
                 .transcript(transcript)
                 .status(MeetingStatus.UPLOADED)
                 .team(team)
+                .repositoryId(repositoryId)
+                .repositoryProvider(providerType)
                 .build();
 
         Meeting createdMeeting = repository.save(meeting);
@@ -128,6 +133,21 @@ public class MeetingServiceImpl extends BaseServiceImpl<Meeting, MeetingDto> imp
         dto.setBacklogItems(productBacklogItemService.analyzeAndCreate(dto).getData());
 
         return ServiceResponse.success(dto, 201);
+    }
+
+    @Override
+    @Transactional
+    public ServiceResponse<MeetingDto> updateRepository(UUID meetingId, String repositoryId, ProviderType providerType) {
+        Meeting meeting = repository.findById(meetingId).orElseThrow(
+                () -> new NotFoundException("Meeting Not Found")
+        );
+
+        meeting.setRepositoryId(repositoryId);
+        meeting.setRepositoryProvider(providerType);
+
+        Meeting savedMeeting = repository.save(meeting);
+        return ServiceResponse.success(mapper.toDto(savedMeeting), 200);
+
     }
 
     @Override

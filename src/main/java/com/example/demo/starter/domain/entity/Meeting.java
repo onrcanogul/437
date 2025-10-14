@@ -2,6 +2,7 @@ package com.example.demo.starter.domain.entity;
 
 import com.example.demo.starter.domain.entity.base.BaseEntity;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
+import com.example.demo.starter.domain.enumeration.ProviderType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,9 @@ public class Meeting extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
+    
+    private String repositoryId;
+    private ProviderType repositoryProvider;
 
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProductBacklogItem> backlogItems = new ArrayList<>();

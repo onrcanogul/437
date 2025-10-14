@@ -2,6 +2,7 @@ package com.example.demo.starter.presentation.controller.v1;
 
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.service.meeting.MeetingService;
+import com.example.demo.starter.domain.enumeration.ProviderType;
 import com.example.demo.starter.infrastructure.util.response.NoContent;
 import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.example.demo.starter.presentation.controller.base.BaseController;
@@ -44,15 +45,28 @@ public class MeetingController extends BaseController {
     @PostMapping
     @Operation(summary = "Create Meeting From Meeting")
     public ResponseEntity<ServiceResponse<MeetingDto>> create(@RequestPart MultipartFile file,
-                                                              @RequestPart String title) throws IOException, InterruptedException {
-        return controllerResponse(meetingService.upload(file, title));
+                                                              @RequestPart String title,
+                                                              @RequestPart String repositoryId,
+                                                              @RequestPart ProviderType providerType
+                                                              ) throws IOException, InterruptedException {
+        return controllerResponse(meetingService.upload(file, title, repositoryId, providerType));
     }
 
     @PostMapping("transcript")
     @Operation(summary = "Create Meeting From Transcript")
     public ResponseEntity<ServiceResponse<MeetingDto>> create(@RequestPart String transcript,
-                                                              @RequestPart String title) throws IOException, InterruptedException {
-        return controllerResponse(meetingService.upload(transcript, title));
+                                                              @RequestPart String title,
+                                                              @RequestPart String repositoryId,
+                                                              @RequestPart ProviderType providerType) throws IOException, InterruptedException {
+        return controllerResponse(meetingService.upload(transcript, title, repositoryId, providerType));
+    }
+
+    @PutMapping("repository")
+    @Operation(summary = "Create Meeting From Transcript")
+    public ResponseEntity<ServiceResponse<MeetingDto>> updateRepository(@RequestParam UUID meetingId,
+                                                                        @RequestParam String repositoryId,
+                                                                        @RequestParam ProviderType providerType) {
+        return controllerResponse(meetingService.updateRepository(meetingId, repositoryId, providerType));
     }
 
     @PutMapping

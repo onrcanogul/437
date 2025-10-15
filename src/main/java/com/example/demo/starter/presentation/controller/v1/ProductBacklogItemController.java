@@ -2,6 +2,7 @@ package com.example.demo.starter.presentation.controller.v1;
 
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
+import com.example.demo.starter.domain.enumeration.ProviderType;
 import com.example.demo.starter.infrastructure.util.response.NoContent;
 import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.example.demo.starter.presentation.controller.base.BaseController;
@@ -37,6 +38,12 @@ public class ProductBacklogItemController extends BaseController {
     @Operation(summary = "Get Product Backlog Item By Id")
     public ResponseEntity<ServiceResponse<ProductBacklogItemDto>> get(@PathVariable UUID id) {
         return controllerResponse(productBacklogItemService.getSingle(id));
+    }
+
+    @PostMapping("/send")
+    @Operation(summary = "Send to 3rd party")
+    public ResponseEntity<ServiceResponse<NoContent>> send(@RequestParam UUID id, @RequestParam ProviderType providerType) {
+        return controllerResponse(productBacklogItemService.send(id, providerType));
     }
 
     @PostMapping

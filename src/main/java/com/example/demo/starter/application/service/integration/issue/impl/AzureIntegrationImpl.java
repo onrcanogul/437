@@ -3,6 +3,7 @@ package com.example.demo.starter.application.service.integration.issue.impl;
 import com.example.demo.starter.application.dto.integration.RepositoryDto;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.integration.issue.AzureIntegration;
+import com.example.demo.starter.domain.entity.ProductBacklogItem;
 import com.example.demo.starter.domain.enumeration.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class AzureIntegrationImpl implements AzureIntegration {
 
 
     @Override
-    public void createIssue(ProductBacklogItemDto pbi) {
+    public void createIssue(ProductBacklogItem pbi, String repositoryId) {
         try {
             String url = String.format(
                     AZURE_ORG_URL, "/%s/%s/_apis/wit/workitems/$Product%%20Backlog%%20Item?api-version=7.0",
@@ -194,7 +195,7 @@ public class AzureIntegrationImpl implements AzureIntegration {
         };
     }
 
-    private String generateFunctionalAnalysis(ProductBacklogItemDto pbi) {
+    private String generateFunctionalAnalysis(ProductBacklogItem pbi) {
         return """
             <strong>Functional Overview:</strong><br>
             %s<br><br>
@@ -203,7 +204,7 @@ public class AzureIntegrationImpl implements AzureIntegration {
             """.formatted(pbi.getDescription());
     }
 
-    private String generateTechnicalAnalysis(ProductBacklogItemDto pbi) {
+    private String generateTechnicalAnalysis(ProductBacklogItem pbi) {
         return """
             <strong>Technical Considerations:</strong><br>
             - Expected complexity: %s<br>

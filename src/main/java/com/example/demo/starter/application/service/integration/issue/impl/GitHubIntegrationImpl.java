@@ -5,6 +5,7 @@ import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
 import com.example.demo.starter.application.service.integration.issue.GithubIntegration;
 import com.example.demo.starter.application.service.integration.token.IntegrationService;
+import com.example.demo.starter.domain.entity.ProductBacklogItem;
 import com.example.demo.starter.domain.enumeration.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class GitHubIntegrationImpl implements GithubIntegration {
     private String repoName;
 
     @Override
-    public void createIssue(ProductBacklogItemDto pbi) {
+    public void createIssue(ProductBacklogItem pbi, String repositoryId) {
         try {
             UUID userId = userService.getCurrentUserId();
 
@@ -42,25 +43,36 @@ public class GitHubIntegrationImpl implements GithubIntegration {
                     .getDecryptedToken(userId, ProviderType.GITHUB)
                     .orElseThrow(() -> new IllegalStateException("No GitHub token found for user " + userId));
 
-            boolean copilotAvailable = checkIfCopilotExists(githubToken);
-
-            String url = String.format("https://api.github.com/repos/%s/%s/issues", repoOwner, repoName);
             HttpHeaders headers = setHeaders(githubToken);
-            String bodyText = buildDescription(pbi);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-            Map<String, Object> body;
-            if (copilotAvailable) {
-                bodyText += "\n\n> Hey @copilot, please start working on this task.\n"
-                        + "> Make sure to follow our project conventions and open a PR when done.";
+            String repoUrl = String.format("https://api.github.com/repositories/%s", repositoryId);
+            ResponseEntity<Map> repoResponse = restTemplate.exchange(repoUrl, HttpMethod.GET, entity, Map.class);
 
-                body = Map.of("title", pbi.getTitle(), "body", bodyText, "assignees", List.of("copilot"));
-                log.info("Copilot detected. Assigning issue to @copilot.");
-            } else {
-                body = Map.of("title", pbi.getTitle(), "body", bodyText);
-                log.info("Copilot not available. Creating regular issue only.");
-            }
+            if (!repoResponse.getStatusCode().is2xxSuccessful() || repoResponse.getBody() == null)
+                throw new IllegalStateException("Failed to fetch repository info for ID: " + repositoryId);
+
+            Map<String, Object> repoData = repoResponse.getBody();
+            String fullName = (String) repoData.get("full_name");
+            log.info("Resolved repository full name: {}", fullName);
+
+            String url = String.format("https://api.github.com/repos/%s/issues", fullName);
+
+            StringBuilder bodyBuilder = new StringBuilder();
+            bodyBuilder.append(buildDescription(pbi));
+
+            bodyBuilder.append("\n\n> Hey [@copilot](https://github.com/copilot), please start working on this task.")
+                    .append("\n> Make sure to follow our project conventions and open a PR when done.");
+
+            String bodyText = bodyBuilder.toString();
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("title", pbi.getTitle());
+            body.put("body", bodyText);
+            body.put("labels", List.of("auto-assign-copilot"));
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
@@ -165,7 +177,7 @@ public class GitHubIntegrationImpl implements GithubIntegration {
         }
     }
 
-    private String buildDescription(ProductBacklogItemDto pbi) {
+    private String buildDescription(ProductBacklogItem pbi) {
         StringBuilder sb = new StringBuilder();
         sb.append("**Description:**\n")
                 .append(pbi.getDescription())

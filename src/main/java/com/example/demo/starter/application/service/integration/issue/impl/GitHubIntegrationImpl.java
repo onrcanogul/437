@@ -1,7 +1,6 @@
 package com.example.demo.starter.application.service.integration.issue.impl;
 
 import com.example.demo.starter.application.dto.integration.RepositoryDto;
-import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
 import com.example.demo.starter.application.service.integration.issue.GithubIntegration;
 import com.example.demo.starter.application.service.integration.token.IntegrationService;
@@ -98,7 +97,7 @@ public class GitHubIntegrationImpl implements GithubIntegration {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String githubReposUrl = "https://api.github.com/user/repos";
+        String githubReposUrl = "https://api.github.com/user/repos?per_page=100";
         ResponseEntity<RepositoryDto[]> response = restTemplate.exchange(
                 githubReposUrl,
                 HttpMethod.GET,

@@ -1,10 +1,12 @@
 spring:
   application:
-    name: Starter-Template
+    name: BIM437-PROJECT
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   datasource:
-    url: jdbc:postgresql://localhost:5432/demo_db
-    username: demo_user
-    password: demo_pass
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_DB}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -13,59 +15,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: YOUR_GOOGLE_CLIENT_ID
-            client-secret: YOUR_GOOGLE_CLIENT_SECRET
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope:
-              - openid
-              - profile
-              - email
-        provider:
-          google:
-            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
-            token-uri: https://oauth2.googleapis.com/token
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-            user-name-attribute: sub
 cloud:
   aws:
     region:
-      static: eu-central-1
+      static: ${AWS_REGION}
     credentials:
-      access-key: asdasd
-      secret-key: asdasd
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
     s3:
-      bucket: meetingmindi-recordings
-
-github:
-  token: ghp_yourtoken
-  repo:
-    owner: yourusername
-    name: yourrepository
-
-azure:
-  organization: your-org
-  project: your-project
-  pat: your-personal-access-token
-
-jira:
-  url: https://your-domain.atlassian.net
-  email: your-email@example.com
-  apiToken: your-jira-api-token
-  projectKey: MINDI
+      bucket: ${S3_BUCKET_NAME}
 
 openai:
   api:
     url: https://api.openai.com/v1/chat/completions
     key: ${OPENAI_API_KEY}
-
-
 encryption:
-  secret: MY_SUPER_SECRET_KEY
-
-
-secret-key: "SECRETKEYKEYKEKYEKYKEYKEYK3242352342efgdsfgsdfgdsfgds"
+  secret: ${ENCRYPTION_SECRET}
+secret-key: ${JWT_SECRET_KEY}

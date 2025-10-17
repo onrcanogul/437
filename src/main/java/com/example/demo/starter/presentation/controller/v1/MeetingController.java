@@ -6,6 +6,7 @@ import com.example.demo.starter.domain.enumeration.ProviderType;
 import com.example.demo.starter.infrastructure.util.response.NoContent;
 import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.example.demo.starter.presentation.controller.base.BaseController;
+import com.example.demo.starter.presentation.model.CreateWithTranscriptRequestModel;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,11 +55,8 @@ public class MeetingController extends BaseController {
 
     @PostMapping("transcript")
     @Operation(summary = "Create Meeting From Transcript")
-    public ResponseEntity<ServiceResponse<MeetingDto>> create(@RequestPart String transcript,
-                                                              @RequestPart String title,
-                                                              @RequestPart String repositoryId,
-                                                              @RequestPart ProviderType providerType) throws IOException, InterruptedException {
-        return controllerResponse(meetingService.upload(transcript, title, repositoryId, providerType));
+    public ResponseEntity<ServiceResponse<MeetingDto>> create(@RequestBody CreateWithTranscriptRequestModel model) throws IOException, InterruptedException {
+        return controllerResponse(meetingService.upload(model.transcript(), model.title(), model.repositoryId(), model.providerType()));
     }
 
     @PutMapping("repository")

@@ -57,7 +57,7 @@ public class ProductBacklogItemServiceImpl extends BaseServiceImpl<ProductBacklo
     @Override
     public ServiceResponse<List<ProductBacklogItemDto>> analyzeAndCreate(MeetingDto meeting) {
         List<ProductBacklogItemDto> backlogItems = aiService.analyzeBacklog(meeting).getData();
-        backlogItems.forEach(x -> x.setMeeting(meeting));
+        backlogItems.forEach(item -> item.setMeeting(meeting));
         List<ProductBacklogItem> items = repository.saveAll(backlogItems.stream().map(mapper::toEntity).toList());
         return ServiceResponse.success(items.stream().map(mapper::toDto).toList(), 200);
     }

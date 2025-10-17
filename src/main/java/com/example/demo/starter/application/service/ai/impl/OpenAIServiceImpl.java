@@ -3,6 +3,7 @@ package com.example.demo.starter.application.service.ai.impl;
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.dto.pbi.ProductBacklogItemDto;
 import com.example.demo.starter.application.service.ai.OpenAIService;
+import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
 import com.example.demo.starter.infrastructure.util.response.ServiceResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,6 +28,7 @@ public class OpenAIServiceImpl implements OpenAIService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService userService;
 
     @Value("${openai.api.key}")
     private String openAiApiKey;
@@ -65,8 +67,7 @@ public class OpenAIServiceImpl implements OpenAIService {
                             "title", meeting.getTitle(),
                             "status", meeting.getStatus().name(),
                             "user", Map.of(
-                                    "id", meeting.getUser().getId(),
-                                    "username", meeting.getUser().getUsername()
+                                    "id", userService.getCurrentUserId()
                             ),
                             "transcript", meeting.getTranscript()
                     )
@@ -76,7 +77,7 @@ public class OpenAIServiceImpl implements OpenAIService {
             You are an AI assistant that analyzes software development meetings
             and extracts as many actionable Product Backlog Items as possible.
             
-            Each backlog item must represent a distinct technical or functional action,
+            Each backlog item must represent a distinct technical or functional action and much detail explanation for each step,
             such as creating a new component, modifying logic, testing, refactoring, or deployment planning.
             
             The following meeting information is provided:

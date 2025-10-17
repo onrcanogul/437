@@ -1,6 +1,5 @@
 package com.example.demo.starter.application.service.meeting.impl;
 
-import com.example.demo.starter.application.dto.integration.RepositoryDto;
 import com.example.demo.starter.application.dto.meeting.MeetingDto;
 import com.example.demo.starter.application.service.audio.AudioService;
 import com.example.demo.starter.application.service.auth.CustomUserDetailsService;
@@ -8,7 +7,6 @@ import com.example.demo.starter.application.service.base.impl.BaseServiceImpl;
 import com.example.demo.starter.application.service.integration.issue.impl.IntegrationResolver;
 import com.example.demo.starter.application.service.meeting.MeetingService;
 import com.example.demo.starter.application.service.pbi.ProductBacklogItemService;
-import com.example.demo.starter.domain.entity.IntegrationToken;
 import com.example.demo.starter.domain.entity.Meeting;
 import com.example.demo.starter.domain.entity.Team;
 import com.example.demo.starter.domain.enumeration.MeetingStatus;
@@ -25,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

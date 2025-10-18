@@ -27,12 +27,6 @@ public class GitHubIntegrationImpl implements GithubIntegration {
     private final IntegrationService integrationService;
     private final CustomUserDetailsService userService;
 
-    @Value("${github.repo.owner}")
-    private String repoOwner;
-
-    @Value("${github.repo.name}")
-    private String repoName;
-
     @Override
     public void createIssue(ProductBacklogItem pbi, String repositoryId) {
         try {

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:latest
-    container_name: postgres-db
+    container_name: 437-db
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -36,7 +36,7 @@ services:
       - 437-net
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      OPENAI_API_TOKEN: ${OPENAI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
       AWS_SECRET_KEY: ${AWS_SECRET_KEY}
       AWS_REGION: ${AWS_REGION}
       POSTGRES_USER: ${POSTGRES_USER}

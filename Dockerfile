@@ -15,4 +15,4 @@ COPY --from=builder /app/target/*.jar app.jar
 ARG ENABLE_DEBUG=false
 ENV ENABLE_DEBUG=${ENABLE_DEBUG}
 
-ENTRYPOINT sh -c "java $([ \"$ENABLE_DEBUG\" = \"true\" ] && echo '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005') -jar app.jar"
+ENTRYPOINT ["sh", "-c", "exec java $([ \"$ENABLE_DEBUG\" = \"true\" ] && echo '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005') -jar app.jar"]

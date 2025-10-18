@@ -23,14 +23,6 @@ public class AzureIntegrationImpl implements AzureIntegration {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${azure.organization}")
-    private String organization;
-
-    @Value("${azure.project}")
-    private String project;
-
-    @Value("${azure.pat}")
-    private String personalAccessToken;
 
     private static final String AZURE_ORG_URL = "https://dev.azure.com";
 
@@ -39,12 +31,11 @@ public class AzureIntegrationImpl implements AzureIntegration {
     public void createIssue(ProductBacklogItem pbi, String repositoryId) {
         try {
             String url = String.format(
-                    AZURE_ORG_URL, "/%s/%s/_apis/wit/workitems/$Product%%20Backlog%%20Item?api-version=7.0",
-                    organization, project
+                    AZURE_ORG_URL, "/%s/%s/_apis/wit/workitems/$Product%%20Backlog%%20Item?api-version=7.0"
             );
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setBasicAuth("", personalAccessToken);
+            headers.setBasicAuth("", "TEST");
             headers.setContentType(MediaType.valueOf("application/json-patch+json"));
 
             List<Map<String, Object>> body = List.of(

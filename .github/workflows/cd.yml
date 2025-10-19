@@ -19,9 +19,7 @@ jobs:
           username: root
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
-          source: |
-            docker-compose.prod.yaml
-            .env.prod
+          source: docker-compose.prod.yml
           target: /opt/meeting-analyzer
 
       - name: Deploy via SSH

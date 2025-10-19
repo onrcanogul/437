@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
           source: docker-compose.prod.yml
-          target: /opt/meeting-analyzer
+          target: /opt/437
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
